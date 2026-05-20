@@ -2,11 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Reserva
+import csv
+from django.http import HttpResponse
 
 def login_view(request):
     if request.method == 'POST':
@@ -29,16 +30,27 @@ def dashboard(request):
     es_admin = request.user.is_staff
     return render(request, 'reservas/dashboard.html', {'es_admin': es_admin})
 
-# LISTAR reservas
+# LISTAR reservas con filtros
 class ReservaListView(LoginRequiredMixin, ListView):
     model = Reserva
     template_name = 'reservas/lista_reservas.html'
     context_object_name = 'reservas'
 
     def get_queryset(self):
-        if self.request.user.is_staff:
-            return Reserva.objects.all()
-        return Reserva.objects.filter(usuario=self.request.user)
+        queryset = Reserva.objects.all() if self.request.user.is_staff else Reserva.objects.filter(usuario=self.request.user)
+        fecha = self.request.GET.get('fecha')
+        laboratorio = self.request.GET.get('laboratorio')
+        if fecha:
+            queryset = queryset.filter(fecha=fecha)
+        if laboratorio:
+            queryset = queryset.filter(laboratorio__icontains=laboratorio)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['fecha'] = self.request.GET.get('fecha', '')
+        context['laboratorio'] = self.request.GET.get('laboratorio', '')
+        return context
 
 # CREAR reserva
 class ReservaCreateView(LoginRequiredMixin, CreateView):
@@ -49,7 +61,6 @@ class ReservaCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.usuario = self.request.user
-        # Validar conflicto de horarios
         nueva = form.instance
         conflicto = Reserva.objects.filter(
             laboratorio=nueva.laboratorio,
@@ -97,3 +108,15 @@ def cambiar_estado(request, pk):
             reserva.estado = nuevo_estado
             reserva.save()
     return redirect('lista_reservas')
+
+# EXPORTAR CSV
+@login_required
+def exportar_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="reservas.csv"'
+    writer = csv.writer(response)
+    writer.writerow(['Laboratorio', 'Fecha', 'Hora inicio', 'Hora fin', 'Estado', 'Usuario', 'Motivo'])
+    reservas = Reserva.objects.all() if request.user.is_staff else Reserva.objects.filter(usuario=request.user)
+    for r in reservas:
+        writer.writerow([r.laboratorio, r.fecha, r.hora_inicio, r.hora_fin, r.estado, r.usuario.username, r.motivo])
+    return response
