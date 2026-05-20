@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Reservas de Laboratorios{% endblock %}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; color: #333; }
+
+        .navbar {
+            background: linear-gradient(135deg, #1a73e8, #0d47a1);
+            color: white; padding: 15px 30px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .navbar h1 { font-size: 20px; font-weight: 600; }
+        .navbar-links { display: flex; gap: 10px; }
+        .navbar a {
+            color: white; text-decoration: none;
+            background: rgba(255,255,255,0.15);
+            padding: 8px 16px; border-radius: 20px;
+            font-size: 14px; transition: background 0.2s;
+        }
+        .navbar a:hover { background: rgba(255,255,255,0.3); }
+
+        .container { padding: 30px; max-width: 1200px; margin: 0 auto; }
+
+        .card {
+            background: white; border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            padding: 30px; margin-bottom: 20px;
+        }
+
+        .page-title {
+            font-size: 24px; font-weight: 600;
+            color: #1a73e8; margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e8f0fe;
+        }
+
+        .btn {
+            padding: 9px 18px; border-radius: 8px;
+            text-decoration: none; font-size: 14px;
+            border: none; cursor: pointer;
+            font-weight: 500; transition: opacity 0.2s;
+            display: inline-block;
+        }
+        .btn:hover { opacity: 0.85; }
+        .btn-primary { background: #1a73e8; color: white; }
+        .btn-warning { background: #f9a825; color: white; }
+        .btn-danger { background: #e53935; color: white; }
+        .btn-success { background: #43a047; color: white; }
+        .btn-secondary { background: #78909c; color: white; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th {
+            background: #1a73e8; color: white;
+            padding: 13px 15px; text-align: left;
+            font-weight: 500; font-size: 14px;
+        }
+        th:first-child { border-radius: 8px 0 0 0; }
+        th:last-child { border-radius: 0 8px 0 0; }
+        td { padding: 12px 15px; border-bottom: 1px solid #f0f2f5; font-size: 14px; }
+        tr:hover td { background: #f8f9ff; }
+
+        .badge {
+            padding: 5px 12px; border-radius: 20px;
+            font-size: 12px; font-weight: 600;
+        }
+        .pendiente { background: #fff3cd; color: #856404; }
+        .aprobada { background: #d4edda; color: #155724; }
+        .rechazada { background: #f8d7da; color: #721c24; }
+
+        .actions-group { display: flex; gap: 6px; flex-wrap: wrap; }
+
+        .top-bar {
+            display: flex; justify-content: space-between;
+            align-items: center; margin-bottom: 25px;
+        }
+
+        .empty-msg { text-align: center; color: #999; padding: 40px; font-size: 15px; }
+
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 500; color: #555; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; padding: 10px 14px;
+            border: 1px solid #ddd; border-radius: 8px;
+            font-size: 14px; transition: border 0.2s;
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none; border-color: #1a73e8;
+            box-shadow: 0 0 0 3px rgba(26,115,232,0.1);
+        }
+        .error-msg { color: #e53935; font-size: 13px; margin-top: 4px; }
+
+        .alert {
+            padding: 12px 18px; border-radius: 8px;
+            margin-bottom: 20px; font-size: 14px;
+        }
+        .alert-error { background: #fdecea; color: #b71c1c; border-left: 4px solid #e53935; }
+
+        {% block extra_styles %}{% endblock %}
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>🔬 Reservas de Laboratorios</h1>
+        <div class="navbar-links">
+            {% if request.user.is_authenticated %}
+                <a href="{% url 'dashboard' %}">Inicio</a>
+                <a href="{% url 'lista_reservas' %}">Reservas</a>
+                <a href="{% url 'logout' %}">Cerrar sesión ({{ request.user.username }})</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

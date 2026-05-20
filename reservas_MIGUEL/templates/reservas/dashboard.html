@@ -1,36 +1,18 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Dashboard - Reservas</title>
-    <style>
-        body { font-family: Arial; background: #f0f2f5; margin: 0; padding: 0; }
-        .navbar { background: #007bff; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
-        .navbar h1 { margin: 0; font-size: 20px; }
-        .navbar a { color: white; text-decoration: none; background: rgba(255,255,255,0.2); padding: 8px 15px; border-radius: 5px; }
-        .container { padding: 30px; }
-        .welcome { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; }
-        .badge-admin { background: #dc3545; color: white; }
-        .badge-docente { background: #28a745; color: white; }
-    </style>
-</head>
-<body>
-    <div class="navbar">
-        <h1>🔬 Reservas de Laboratorios</h1>
-        <a href="{% url 'logout' %}">Cerrar sesión</a>
-    </div>
-    <div class="container">
-        <div class="welcome">
-            <h2>Bienvenido, {{ request.user.username }} 
-                {% if es_admin %}
-                    <span class="badge badge-admin">Administrador</span>
-                {% else %}
-                    <span class="badge badge-docente">Docente</span>
-                {% endif %}
-            </h2>
-            <p>Sistema de Gestión de Reservas de Laboratorios</p>
-        </div>
-    </div>
-</body>
-</html>
+{% extends 'reservas/base.html' %}
+
+{% block title %}Dashboard - Reservas{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="page-title">
+        Bienvenido, {{ request.user.username }}
+        {% if es_admin %}
+            <span class="badge" style="background:#e8f0fe; color:#1a73e8;">Administrador</span>
+        {% else %}
+            <span class="badge" style="background:#e6f4ea; color:#137333;">Docente</span>
+        {% endif %}
+    </h2>
+    <p style="color:#666; margin-bottom:25px;">Sistema de Gestión de Reservas de Laboratorios</p>
+    <a href="{% url 'lista_reservas' %}" class="btn btn-primary">Ver mis reservas</a>
+</div>
+{% endblock %}

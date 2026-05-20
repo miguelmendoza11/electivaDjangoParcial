@@ -1,67 +1,38 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Lista de Reservas</title>
-    <style>
-        body { font-family: Arial; background: #f0f2f5; margin: 0; }
-        .navbar { background: #007bff; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
-        .navbar h1 { margin: 0; font-size: 20px; }
-        .navbar a { color: white; text-decoration: none; background: rgba(255,255,255,0.2); padding: 8px 15px; border-radius: 5px; margin-left: 10px; }
-        .container { padding: 30px; }
-        .btn { padding: 8px 16px; border-radius: 5px; text-decoration: none; font-size: 14px; border: none; cursor: pointer; }
-        .btn-primary { background: #007bff; color: white; }
-        .btn-warning { background: #ffc107; color: black; }
-        .btn-danger { background: #dc3545; color: white; }
-        .btn-success { background: #28a745; color: white; }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        th { background: #007bff; color: white; padding: 12px; text-align: left; }
-        td { padding: 12px; border-bottom: 1px solid #eee; }
-        tr:hover { background: #f8f9fa; }
-        .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-        .pendiente { background: #ffc107; color: black; }
-        .aprobada { background: #28a745; color: white; }
-        .rechazada { background: #dc3545; color: white; }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    </style>
-</head>
-<body>
-    <div class="navbar">
-        <h1>🔬 Reservas de Laboratorios</h1>
-        <div>
-            <a href="{% url 'dashboard' %}">Inicio</a>
-            <a href="{% url 'logout' %}">Cerrar sesión</a>
-        </div>
-    </div>
-    <div class="container">
-        <div class="top-bar">
-            <h2>Lista de Reservas</h2>
-            <a href="{% url 'crear_reserva' %}" class="btn btn-primary">+ Nueva Reserva</a>
-        </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Laboratorio</th>
-                    <th>Fecha</th>
-                    <th>Hora inicio</th>
-                    <th>Hora fin</th>
-                    <th>Motivo</th>
-                    <th>Estado</th>
-                    <th>Usuario</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for reserva in reservas %}
-                <tr>
-                    <td>{{ reserva.laboratorio }}</td>
-                    <td>{{ reserva.fecha }}</td>
-                    <td>{{ reserva.hora_inicio }}</td>
-                    <td>{{ reserva.hora_fin }}</td>
-                    <td>{{ reserva.motivo }}</td>
-                    <td><span class="badge {{ reserva.estado }}">{{ reserva.get_estado_display }}</span></td>
-                    <td>{{ reserva.usuario.username }}</td>
-                    <td>
+{% extends 'reservas/base.html' %}
+
+{% block title %}Lista de Reservas{% endblock %}
+
+{% block content %}
+<div class="top-bar">
+    <h2 class="page-title">Lista de Reservas</h2>
+    <a href="{% url 'crear_reserva' %}" class="btn btn-primary">+ Nueva Reserva</a>
+</div>
+<div class="card" style="padding: 0; overflow: hidden;">
+    <table>
+        <thead>
+            <tr>
+                <th>Laboratorio</th>
+                <th>Fecha</th>
+                <th>Hora inicio</th>
+                <th>Hora fin</th>
+                <th>Motivo</th>
+                <th>Estado</th>
+                <th>Usuario</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reserva in reservas %}
+            <tr>
+                <td>{{ reserva.laboratorio }}</td>
+                <td>{{ reserva.fecha }}</td>
+                <td>{{ reserva.hora_inicio }}</td>
+                <td>{{ reserva.hora_fin }}</td>
+                <td>{{ reserva.motivo }}</td>
+                <td><span class="badge {{ reserva.estado }}">{{ reserva.get_estado_display }}</span></td>
+                <td>{{ reserva.usuario.username }}</td>
+                <td>
+                    <div class="actions-group">
                         {% if reserva.estado == 'pendiente' and reserva.usuario == request.user %}
                             <a href="{% url 'editar_reserva' reserva.pk %}" class="btn btn-warning">Editar</a>
                             <a href="{% url 'eliminar_reserva' reserva.pk %}" class="btn btn-danger">Eliminar</a>
@@ -73,13 +44,13 @@
                                 <button name="estado" value="rechazada" class="btn btn-danger">Rechazar</button>
                             </form>
                         {% endif %}
-                    </td>
-                </tr>
-                {% empty %}
-                <tr><td colspan="8" style="text-align:center; color:#999;">No hay reservas registradas.</td></tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</body>
-</html>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="8" class="empty-msg">No hay reservas registradas.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
