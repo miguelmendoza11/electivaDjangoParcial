@@ -1,0 +1,21 @@
+{% extends 'reservas/base.html' %}
+
+{% block title %}Confirmar Eliminación{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 500px; margin: 0 auto; text-align: center;">
+    <h2 class="page-title">¿Eliminar reserva?</h2>
+    <p style="color:#666; margin-bottom:25px;">
+        ¿Estás seguro de eliminar la reserva del laboratorio 
+        <strong>{{ object.laboratorio }}</strong> del día 
+        <strong>{{ object.fecha }}</strong>?
+    </p>
+    <form method="post">
+        {% csrf_token %}
+        <div class="actions-group" style="justify-content:center;">
+            <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+            <a href="{% url 'lista_reservas' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

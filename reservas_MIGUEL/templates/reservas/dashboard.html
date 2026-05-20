@@ -1,0 +1,18 @@
+{% extends 'reservas/base.html' %}
+
+{% block title %}Dashboard - Reservas{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="page-title">
+        Bienvenido, {{ request.user.username }}
+        {% if es_admin %}
+            <span class="badge" style="background:#e8f0fe; color:#1a73e8;">Administrador</span>
+        {% else %}
+            <span class="badge" style="background:#e6f4ea; color:#137333;">Docente</span>
+        {% endif %}
+    </h2>
+    <p style="color:#666; margin-bottom:25px;">Sistema de Gestión de Reservas de Laboratorios</p>
+    <a href="{% url 'lista_reservas' %}" class="btn btn-primary">Ver mis reservas</a>
+</div>
+{% endblock %}

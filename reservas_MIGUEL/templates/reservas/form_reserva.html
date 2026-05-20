@@ -1,0 +1,28 @@
+{% extends 'reservas/base.html' %}
+
+{% block title %}{% if object %}Editar{% else %}Nueva{% endif %} Reserva{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <h2 class="page-title">{% if object %}Editar{% else %}Nueva{% endif %} Reserva</h2>
+    {% if form.non_field_errors %}
+        <div class="alert alert-error">{{ form.non_field_errors }}</div>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group">
+                <label>{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <p class="error-msg">{{ field.errors }}</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <div class="actions-group" style="margin-top:10px;">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a href="{% url 'lista_reservas' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
