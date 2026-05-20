@@ -1,0 +1,1 @@
+web: gunicorn reservas_laboratorio_MIGUEL.wsgi
