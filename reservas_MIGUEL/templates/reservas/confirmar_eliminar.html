@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmar Eliminación</title>
+    <style>
+        body { font-family: Arial; background: #f0f2f5; margin: 0; }
+        .navbar { background: #007bff; color: white; padding: 15px 30px; }
+        .navbar h1 { margin: 0; font-size: 20px; }
+        .container { padding: 30px; max-width: 500px; margin: 0 auto; }
+        .card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; }
+        .btn { padding: 10px 25px; border-radius: 5px; border: none; cursor: pointer; font-size: 15px; margin: 5px; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-secondary { background: #6c757d; color: white; text-decoration: none; padding: 10px 25px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>🔬 Reservas de Laboratorios</h1>
+    </div>
+    <div class="container">
+        <div class="card">
+            <h2>¿Eliminar reserva?</h2>
+            <p>¿Estás seguro de que deseas eliminar la reserva del laboratorio <strong>{{ object.laboratorio }}</strong> del día <strong>{{ object.fecha }}</strong>?</p>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+                <a href="{% url 'lista_reservas' %}" class="btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
